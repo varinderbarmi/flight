@@ -19,7 +19,7 @@ public class JwtTokenUtil implements Serializable {
 
 	private static final long serialVersionUID = -2550185165626007488L;
 
-	public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+	public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 1000;//hrs
 
 	@Value("${jwt.secret}")
 	private String secret;
@@ -38,7 +38,7 @@ public class JwtTokenUtil implements Serializable {
 		final Claims claims = getAllClaimsFromToken(token);
 		return claimsResolver.apply(claims);
 	}
-    //for retrieving any information from token we will need the secret key
+    //for retrieveing any information from token we will need the secret key
 	private Claims getAllClaimsFromToken(String token) {
 		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
 	}
@@ -52,8 +52,8 @@ public class JwtTokenUtil implements Serializable {
 	//generate token for user
 	public String generateToken(UserDetails userDetails) {
 		Map<String, Object> claims = new HashMap<>();
-		claims.put("abc", "123456789");
-		claims.put("somedata", "333334");
+		claims.put("abc", "12346789");
+		claims.put("somedata", "some important info");
 		return doGenerateToken(claims, userDetails.getUsername());
 	}
 
@@ -65,7 +65,7 @@ public class JwtTokenUtil implements Serializable {
 	private String doGenerateToken(Map<String, Object> claims, String subject) {
 
 		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY ))
 				.signWith(SignatureAlgorithm.HS512, secret).compact();
 	}
 

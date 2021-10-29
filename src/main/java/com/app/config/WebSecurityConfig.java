@@ -37,18 +37,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// configure AuthenticationManager so that it knows from where to load
 		// user for matching credentials
 		// Use BCryptPasswordEncoder
-		//auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+		
+//		auth.inMemoryAuthentication()
+//		auth.ldapAuthentication()
+//		auth.jdbcAuthentication()
+		
+		
 		auth.userDetailsService(jwtUserDetailsService);
-
+//		auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
 	}
 
-	
-	@Bean public PasswordEncoder passwordEncoder() { 
-		return new BCryptPasswordEncoder(); 
-	}
-	 
-	  
-	  
+//	@Bean
+//	public PasswordEncoder passwordEncoder() {
+//		return new BCryptPasswordEncoder();
+//	}
+
 	@Bean
 	@Override
 	public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -60,8 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// We don't need CSRF for this example
 		httpSecurity.csrf().disable()
 				// dont authenticate this particular request
-				//.authorizeRequests().("/home","/authenticate").permitAll().
-				.authorizeRequests().antMatchers("/home","/authenticate").permitAll().
+				.authorizeRequests().antMatchers("/home", "/authenticate", "/auth").permitAll().
 				// all other requests need to be authenticated
 				anyRequest().authenticated().and().
 				// make sure we use stateless session; session won't be used to

@@ -48,36 +48,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			} catch (ExpiredJwtException e) {
 				System.out.println("JWT Token has expired");
 			}
-			
-			// Once we get the token validate it.
-			if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-				UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
-
-				// if token is valid configure Spring Security to manually set
-				// authentication
-				if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
-
-					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-							userDetails, null, userDetails.getAuthorities());
-					usernamePasswordAuthenticationToken
-							.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-					// After setting the Authentication in the context, we specify
-					// that the current user is authenticated. So it passes the
-					// Spring Security Configurations successfully.
-					SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-				}
-			}
-			chain.doFilter(request, response);
-			
 		} else {
 			System.out.println("JWT Token does not begin with Bearer String");
-			System.out.println(request.getRequestURI() );
-			
-			/*
-			 * if(request.getRequestURI().equals("/authenticate")) { chain.doFilter(request,
-			 * response); }
-			 */
 		}
 
 		// Once we get the token validate it.
@@ -99,7 +71,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 			}
 		}
+		
+		// pre-process
 		chain.doFilter(request, response);
+		// post-process
 	}
 
 }

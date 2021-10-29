@@ -1,6 +1,8 @@
 package com.app.exception;
 
+
 public class FlightException extends Exception{
+	
 
 	public FlightException() {
 		super();
